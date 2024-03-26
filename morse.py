@@ -15,8 +15,6 @@ class MorseStringFormatingError(Exception):
         super().__init__(self.message)
 
 
-# TODO: create a morse to text translator that uses the common CW techniques and
-# procedures.
 class Morse(object):
     def __init__(self) -> None:
         self._morse_code = bidict.bidict(
@@ -38,7 +36,6 @@ class Morse(object):
                     ('?', '..--..'),(';', '-.-.-.'),(':', '---...'),
                     ("'", '.----.'),('-', '-....-'),('/', '-..-.'),
                     ('_', '..--.-')
-                    # ('(', '-.--.-'), # (')', '-.--.-')
                 ]
             )
         )
@@ -101,18 +98,8 @@ class Morse(object):
 
 def main():
     translator = Morse()
-    message='Whether tis nobler a the mind to suffer'
-    # # message='SOS'
+    message='Whether tis nobler to the mind to suffer'
     translated_text_message = translator.translate(message=message)
-    
-    # morse_message = ['-   ---', '-...   .', '---   .-.', '-.   ---   -', '-   ---', '-...   .', '-   ....   .-   -', '..   ...', '-   ....   .', '--.-   ..-   .   ...   -   ..   ---   -.']
-    # morse_message='--.-   ..-   .   ...   -   ..   ---   -.   ---...'
-    # morse_message = '       '.join(morse_message)
-    # morse_message = '-   ---       -...   .       -.   ---   -       -   ---       -...   .       -   ....   .   -       ..   ...       -   ....   .       --.-   ..-   ...   -   ..   ---   -   .   -.-.   ....   .-   ...   .       .   .-   .       -   ....   .       --.   .-   .   -   .-..   .   -   ..   ...       ---   ..-.       .-.   ..   .-.   ---   -.   -   ..-   .       ---   ..-   .-.         .-   --.   ..   ...       ..   ---   ..-.   .       .--   ....   .   -   -   ....   .   .-.   ...       -   ..   ...       -.   ---   -...   .   .-.   .-   .--.   ...       ---   ..-.   .-.   ---   .-.   -   ....   .-   -   ..'
-    morse_message = '       '.join(translated_text_message)
-    text = translator.translate(morse_message)
-    '--   ....   .   -   ....   .   .-.       -   ..   ...       -.   ---   -...   .-..   .   .-.       .- '
-    print(text, end='\n')
     print(translated_text_message)
 
 
