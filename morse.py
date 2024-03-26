@@ -59,9 +59,11 @@ class Morse(object):
         if len(words) > 1:
             multiple_words = True
             single_letters = [word for word in words if word.find('   ') == -1]
-            if (len(single_letters) / len(words)) < 0.5:
+            correct_words = [word for word in words if word.find('   ') != -1]
+            if correct_words is None:
+                raise MorseStringFormatingError(words=message)
+            if (len(single_letters) / len(correct_words)) < 0.5:
                 return multiple_words
-            
             else:
                 raise MorseStringFormatingError(word=message)
         
