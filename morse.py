@@ -14,7 +14,7 @@ class MorseStringFormatingError(Exception):
         self.message = message.format(word=word)
         super().__init__(self.message)
 
-
+# todo make it a CLI and add sound to encoded messages.
 class Morse(object):
     def __init__(self) -> None:
         self._morse_code = bidict.bidict(
@@ -48,27 +48,34 @@ class Morse(object):
         message = message.split(' ')
         return message
 
-    def _is_morse_code_formated(self, message:str):
+    def _count_whitespaces(self, text: str) -> dict:
+        counts = {i: 0 for i in [1,2,4,5,6,8]}
+        i = 0
+        while i < len(text):
+            if text[i].isspace():
+                count = 0
+                while i < len(text) and text[i].isspace():
+                    count += 1
+                    i += 1
+                if count in counts:
+                    counts[count] += 1
+            else:
+                    i += 1
+        return counts
+
+    def _check_morse_string_format(self, message:str):
         if not isinstance(message, str):
-            raise TypeError('Only string messages allowed')
-        
+            raise TypeError(f'Only string messages allowed not {type(message)}')
+        white_space_count = self._count_whitespaces(message)
+        if any(x != 0 for x in white_space_count.values()):
+            raise MorseStringFormatingError(word=message)
         words = message.split('       ')
         if len(words) > 1:
-            multiple_words = True
-            single_letters = [word for word in words if word.find('   ') == -1]
-            correct_words = [word for word in words if word.find('   ') != -1]
-            if correct_words is None:
-                raise MorseStringFormatingError(words=message)
-            if (len(single_letters) / len(correct_words)) < 0.5:
-                return multiple_words
-            else:
-                raise MorseStringFormatingError(word=message)
-        
+            return True       
         elif message.find('   ') != -1:
-            multiple_words = False
-            return multiple_words
-        
-        raise MorseStringFormatingError(word=message)
+            return False
+        else:
+            raise MorseStringFormatingError(word=message)
 
     def _encode(self, word:str) -> str:
         encoded_word = [
@@ -83,9 +90,9 @@ class Morse(object):
         return ''.join(decoded_word)
         
     def translate(self, message:str) -> list:
-        is_morse = bool(re.match('^(\.|\s|-)+$', message))
+        is_morse = bool(re.match(r'^(\.|\s|-)+$', message))
         if is_morse:
-            multiple_words = self._is_morse_code_formated(message)
+            multiple_words = self._check_morse_string_format(message)
             if multiple_words:
                 words = message.split('       ')
                 decoded_message = list(map(self._decode, words))
@@ -98,9 +105,9 @@ class Morse(object):
 
 def main():
     translator = Morse()
-    message='Whether tis nobler to the mind to suffer'
+    message='.--  ....    .    -  ....  .  .-.       -  ..  ...       -.'
     translated_text_message = translator.translate(message=message)
-    print(translated_text_message)
+    print('     '.join(translated_text_message))
 
 
 if __name__=='__main__':
