@@ -3,7 +3,7 @@ import unittest
 
 
 from morse import Morse
-
+from errors import MorseStringFormatingError
 
 class TranslatorTestCase(unittest.TestCase):
     def setUp(self) -> None:
@@ -29,7 +29,8 @@ class TranslatorTestCase(unittest.TestCase):
             'correct':'.--   ....   .   -   ....   .   .-.       -   ..   ...       -.   ---   -...   .-..   .   .-.       -   ---       -   ....   .       --   ..   -.   -..       -   ---       ...   ..-   ..-.   ..-.   .   .-.',
             'wrong_inter_word':'.--   ....   .   -   ....   .   .-.     -   ..   ...     -.   ---   -...   .-..   .   .-.     -   ---     -   ....   .     --   ..   -.   -..     -   ---     ...   ..-   ..-.   ..-.   .   .-.',
             'wrong_inter_letter':'.--  ....    .    -  ....  .  .-.       -  ..  ...       -.',
-            'not_morse_code': 'Hello there! Im not morse code'
+            'not_morse_code': 'Hello there! Im not morse code',
+            'single_word':'.--   ....   .   -   ....   .   .-.'
         }
         return super().setUp()
     
@@ -44,14 +45,43 @@ class TranslatorTestCase(unittest.TestCase):
         formated_message = ' '.join(formated_message)
         self.assertEqual(formated_message, message.upper())
 
-    def test_is_morse_code_formated(self):
+    def test_white_space_check_ok(self):
         correct_formating = self.morse_message.get('correct')
-        
         morse = Morse()
         self.assertTrue(morse._is_morse_code_formated(correct_formating))
         
-    def test_is_morse_code_formated_wrong_inter_words(self):
-        wrong_inter_words = self.morse_message.get('wrong_inter_word')
-        
+    def test_white_space_check_raises_exception(self):
         morse = Morse()
-        self.assetFal
+        self.assertRaises(
+            callable=morse._white_space_check,
+            expected_exception=MorseStringFormatingError,
+            kwargs=self.morse_message.get('wrong_inter_word')
+        )
+        self.assertRaises(
+            callable=morse._white_space_check,
+            expected_exception=MorseStringFormatingError,
+            kwargs=self.morse_message.get('wrong_inter_letter')
+        )
+    
+    def test_is_morse(self):
+        morse = Morse()
+        self.assertFalse(
+            morse._is_morse(self.morse_message.get('not_morse_code'))
+        )
+        self.assertTrue(
+            morse._is_morse(self.morse_message.get('correct'))
+        )
+
+    def test_single_word(self):
+        morse = Morse()
+        self.assertTrue(
+            morse._single_word(self.morse_message.get('single_word'))
+        )
+        self.assertFalse(
+                    morse._single_word(self.morse_message.get('correct'))
+        )
+
+
+
+
+
