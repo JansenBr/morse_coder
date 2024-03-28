@@ -32,6 +32,7 @@ class Morse(object):
             )
         )
 
+
     def _text_message_formater(self, message:str) -> list:
         message = message.upper()
         message = ''.join(
@@ -92,6 +93,7 @@ class Morse(object):
         return ''.join(decoded_word)
         
     def translate(self, message:str) -> list:
+        
         if self._is_morse(message) and self._white_space_check(message):
             if self._single_word(message):
                 decoded_message = list(map(self._decode, message.split('   ')))
@@ -103,13 +105,14 @@ class Morse(object):
                 )
                 return ' '.join(decoded_message)
         message = self._text_message_formater(message)
-        return list(map(self._encode, message))
+        morse = list(map(self._encode, message))
+        return '       '.join(morse)
 
 
 def main():
     translator = Morse()
     # message='To be, or not to be, that is the question:'
-    message='-   ---       -...   .   --..--       ---   .-.       -.   ---   -       -   ---       -...   .   --..--       -   ....   .-   -       ..   ...       -   ....   .       --.-   ..-   .   ...   -   ..   ---   -.   ---...'
+    message='.--   ....   .   -   ....   .   .-.'
     translated_text_message = translator.translate(message=message)
     # print('       '.join(translated_text_message))
     print(translated_text_message)
