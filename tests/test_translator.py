@@ -48,21 +48,16 @@ class TranslatorTestCase(unittest.TestCase):
     def test_white_space_check_ok(self):
         correct_formating = self.morse_message.get('correct')
         morse = Morse()
-        self.assertTrue(morse._is_morse_code_formated(correct_formating))
+        self.assertTrue(morse._white_space_check(correct_formating))
         
     def test_white_space_check_raises_exception(self):
         morse = Morse()
-        self.assertRaises(
-            callable=morse._white_space_check,
-            expected_exception=MorseStringFormatingError,
-            kwargs=self.morse_message.get('wrong_inter_word')
-        )
-        self.assertRaises(
-            callable=morse._white_space_check,
-            expected_exception=MorseStringFormatingError,
-            kwargs=self.morse_message.get('wrong_inter_letter')
-        )
-    
+        with self.assertRaises(MorseStringFormatingError):
+            morse._white_space_check(self.morse_message.get('wrong_inter_word'))
+        
+        with self.assertRaises(MorseStringFormatingError):
+            morse._white_space_check(self.morse_message.get('wrong_inter_letter'))
+
     def test_is_morse(self):
         morse = Morse()
         self.assertFalse(
@@ -81,7 +76,19 @@ class TranslatorTestCase(unittest.TestCase):
                     morse._single_word(self.morse_message.get('correct'))
         )
 
+    def test_encode(self):
+        morse = Morse()
+        text = morse._encode('WHETHER')
+        self.assertEqual(text, self.morse_message.get('single_word'))
 
+    def test_decode(self):
+        morse = Morse()
+        morse_text = morse._decode(self.morse_message.get('single_word'))
+        self.assertEqual(morse_text, 'WHETHER')
 
-
+    def test_translate_text(self):
+        morse = Morse()
+        morse_code = morse.translate(self.messages[3])
+        text = morse.translate(morse_code)
+        self.assertEqual(self.messages[3].upper(), text)
 
