@@ -1,12 +1,12 @@
 import re
 import bidict
+import argparse
 
 
 from collections import OrderedDict
 from errors import MorseStringFormatingError
+from cli import create_cli
 
-
-# todo make it a CLI and add sound to encoded messages.
 class Morse(object):
     def __init__(self) -> None:
         self._morse_code = bidict.bidict(
@@ -75,6 +75,8 @@ class Morse(object):
                 return False       
             elif message.find('   ') != -1:
                 return True
+            elif len(words)==1:
+                return True
             else:
                 raise MorseStringFormatingError(
                     string=message
@@ -110,12 +112,35 @@ class Morse(object):
 
 
 def main():
-    translator = Morse()
-    # message='To be, or not to be, that is the question:'
-    message='.--   ....   .   -   ....   .   .-.'
-    translated_text_message = translator.translate(message=message)
-    # print('       '.join(translated_text_message))
-    print(translated_text_message)
+    
+    parser = argparse.ArgumentParser(
+        prog='morse_coder',
+        description='Simple CLI to encode text-to-morse and decode morse-to-text',
+        epilog='BYE | -...   -.--   .'
+    )
+
+    parser.add_argument(
+        'action',
+        choices=['translate'],
+        help='''Translates de input text-to-morse or morse-to-text, the programm will
+        figure whether your text is morse o not and apply the correct translation.
+        '''
+    )
+    parser.add_argument(
+        'text',
+        nargs=argparse.REMAINDER,
+        help='String text to be translated'
+    )
+    morse = Morse()
+    
+    args = parser.parse_args()
+
+    if args.action == 'translate':
+        out = morse.translate(args.text[0])
+        print(out)
+    else:
+        print(f'Invalid action: {args.action}')
+
 
 
 if __name__=='__main__':

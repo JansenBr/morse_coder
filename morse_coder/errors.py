@@ -3,7 +3,7 @@ class MorseStringFormatingError(Exception):
     def __init__(
         self,
         string:str,
-        white_spaces:dict,
+        white_spaces:dict=None,
         error_message:str='The string: "{string}"\n is not formated correctly, check for those white spaces: {white_spaces}'
     ) -> None:
         if white_spaces:
