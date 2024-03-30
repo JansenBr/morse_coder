@@ -1,11 +1,12 @@
 import re
 import bidict
-import argparse
 
 
 from collections import OrderedDict
+
+
 from errors import MorseStringFormatingError
-from cli import create_cli
+
 
 class Morse(object):
     def __init__(self) -> None:
@@ -95,11 +96,10 @@ class Morse(object):
         return ''.join(decoded_word)
         
     def translate(self, message:str) -> list:
-        
         if self._is_morse(message) and self._white_space_check(message):
             if self._single_word(message):
                 decoded_message = list(map(self._decode, message.split('   ')))
-                return ' '.join(decoded_message)
+                return ''.join(decoded_message)
             else:
                 decoded_message = list(map(
                     self._decode, message.split('       ')
@@ -111,37 +111,3 @@ class Morse(object):
         return '       '.join(morse)
 
 
-def main():
-    
-    parser = argparse.ArgumentParser(
-        prog='morse_coder',
-        description='Simple CLI to encode text-to-morse and decode morse-to-text',
-        epilog='BYE | -...   -.--   .'
-    )
-
-    parser.add_argument(
-        'action',
-        choices=['translate'],
-        help='''Translates de input text-to-morse or morse-to-text, the programm will
-        figure whether your text is morse o not and apply the correct translation.
-        '''
-    )
-    parser.add_argument(
-        'text',
-        nargs=argparse.REMAINDER,
-        help='String text to be translated'
-    )
-    morse = Morse()
-    
-    args = parser.parse_args()
-
-    if args.action == 'translate':
-        out = morse.translate(args.text[0])
-        print(out)
-    else:
-        print(f'Invalid action: {args.action}')
-
-
-
-if __name__=='__main__':
-    main()
